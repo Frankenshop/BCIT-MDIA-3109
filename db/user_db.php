@@ -21,7 +21,7 @@ class User_db {
 	$result = mysqli_query($con, $query);
 	$username = array();
 	while ($row = mysqli_fetch_array($result)){
-		$username[$row['id']] = $row['username'];
+		$username[$row['id']] = $row['username'] . ", " . $row['desc'];
 	}
 
 		return $username;

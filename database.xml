@@ -1,0 +1,72 @@
+--
+-- Database: `AADassignment1_db`
+--
+
+-- --------------------------------------------------------------
+
+--
+-- Structure for table `Images`
+--
+
+CREATE TABLE `Images` (
+  `ImageID` int(32) NOT NULL AUTO_INCREMENT,
+  `Username` varchar(32) NOT NULL,
+  `FileName` varchar(1024) NOT NULL,
+  `Title` varchar(80) DEFAULT NULL,
+  `Description` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`AssetID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
+
+--
+-- Dumby data for table Images
+--
+
+INSERT INTO `Images` (`ImageID`, `Username`, `FileName`, `Title`, `Description`) VALUES
+(10, 'Frankenshop', 'Frankenshop_Ruins.jpg', 'Ruins', 'My Photoshop Midterm');
+
+-- --------- Tables Connected by Username -----------------------
+
+--
+-- Structure for table `Portfolio`
+--
+
+CREATE TABLE `Portfolio` (
+  `Username` varchar(32) NOT NULL,
+  `SplashImageLink` varchar(1024) DEFAULT NULL,
+  `PortfolioName` varchar(50) DEFAULT NULL,
+  `Summary` varchar(1024) DEFAULT NULL,
+  `CollaboratorID` int(32) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`Username`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumby data for table Portfolio
+--
+
+INSERT INTO `Portfolio` (`Username`, `SplashImageLink`, `PortfolioName`, `Summary`, `CollaboratorID`) VALUES
+
+('Frankenshop', NULL, NULL, NULL, 1),
+('TestUser', NULL, NULL, NULL, 2);
+
+-- ------ Tables Connected by Username and CollaboroatorID -------
+
+--
+-- Structure for table `Users`
+--
+
+CREATE TABLE `Users` (
+  `Username` varchar(32) NOT NULL,
+  `Password` varchar(32) NOT NULL,
+  `FirstName` varchar(50) NOT NULL,
+  `LastName` varchar(50) NOT NULL,
+  `Collaborators` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`Username`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumby data for table Users
+--
+
+INSERT INTO `Users` (`Username`, `Password`, `FirstName`, `LastName`, `Collaborators`) VALUES
+('Frankenshop', 'password', 'Sean', 'Callaghan Cullen', 'NULL'),
+('TestUser', 'password', 'Person', 'Man', 'NULL');

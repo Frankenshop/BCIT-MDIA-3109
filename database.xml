@@ -1,72 +1,46 @@
---
--- Database: `AADassignment1_db`
---
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Primary key id',
+  `username` varchar(256) NOT NULL COMMENT 'the users account name',
+  `password` varchar(256) NOT NULL COMMENT 'users password for account',
+  `status` int(11) NOT NULL COMMENT 'admin/user/banned',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
 
--- --------------------------------------------------------------
 
---
--- Structure for table `Images`
---
+CREATE TABLE `picture` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'primary key id',
+  `link` varchar(500) NOT NULL COMMENT 'The link of the image located on the server',
+  `title` varchar(128) NOT NULL COMMENT 'Title of the picture chosen by the user',
+  `description` varchar(1000) NOT NULL COMMENT 'description of the picture given by the user',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
-CREATE TABLE `Images` (
-  `ImageID` int(32) NOT NULL AUTO_INCREMENT,
-  `Username` varchar(32) NOT NULL,
-  `FileName` varchar(1024) NOT NULL,
-  `Title` varchar(80) DEFAULT NULL,
-  `Description` varchar(512) DEFAULT NULL,
-  PRIMARY KEY (`AssetID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
+CREATE TABLE `user_picture` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL COMMENT 'reference to user''s id field',
+  `picture_id` int(11) NOT NULL COMMENT 'reference to picture''s id field',
+  PRIMARY KEY (`id`),
+  KEY `picture_id` (`picture_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
---
--- Dumby data for table Images
---
-
-INSERT INTO `Images` (`ImageID`, `Username`, `FileName`, `Title`, `Description`) VALUES
-(10, 'Frankenshop', 'Frankenshop_Ruins.jpg', 'Ruins', 'My Photoshop Midterm');
-
--- --------- Tables Connected by Username -----------------------
-
---
--- Structure for table `Portfolio`
---
+INSERT INTO `user_picture` (`id`, `user_id`, `picture_id`) VALUES
+(1, 7, 1);
 
 CREATE TABLE `Portfolio` (
-  `Username` varchar(32) NOT NULL,
-  `SplashImageLink` varchar(1024) DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `PortfolioName` varchar(50) DEFAULT NULL,
   `Summary` varchar(1024) DEFAULT NULL,
-  `CollaboratorID` int(32) NOT NULL AUTO_INCREMENT,
+  `Collaborators` int(11) NOT NULL COMMENT 'reference to user''s id field',
   PRIMARY KEY (`Username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumby data for table Portfolio
---
-
-INSERT INTO `Portfolio` (`Username`, `SplashImageLink`, `PortfolioName`, `Summary`, `CollaboratorID`) VALUES
-
-('Frankenshop', NULL, NULL, NULL, 1),
-('TestUser', NULL, NULL, NULL, 2);
-
--- ------ Tables Connected by Username and CollaboroatorID -------
-
---
--- Structure for table `Users`
---
-
-CREATE TABLE `Users` (
-  `Username` varchar(32) NOT NULL,
-  `Password` varchar(32) NOT NULL,
-  `FirstName` varchar(50) NOT NULL,
-  `LastName` varchar(50) NOT NULL,
-  `Collaborators` varchar(1024) DEFAULT NULL,
-  PRIMARY KEY (`Username`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumby data for table Users
---
-
-INSERT INTO `Users` (`Username`, `Password`, `FirstName`, `LastName`, `Collaborators`) VALUES
-('Frankenshop', 'password', 'Sean', 'Callaghan Cullen', 'NULL'),
-('TestUser', 'password', 'Person', 'Man', 'NULL');
+CREATE TABLE `user_portfolio` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL COMMENT 'reference to user''s id field',
+  `portfolio_id` int(11) NOT NULL COMMENT 'reference to portfolios''s id field',
+  PRIMARY KEY (`id`),
+  KEY `picture_id` (`picture_id`),
+  KEY `portfolio_id` (`portfolio_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;

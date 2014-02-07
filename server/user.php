@@ -10,19 +10,10 @@ class User {
 		return $var->get_user();
 	}
 	
-	function get_usernames(){
-	
-	$var = new User_db();
-	$usernames = $var->get_all_users();
-	
-	foreach($usernames as $id => $name){
-		if($name == "Sean"){
-			$usernames[$id] = $name." - Admin";
-		}
-	}
-	
-	return $usernames;
-		
+	function get_usernames() {
+		$var = new User_db();
+		$usernames = $var->get_all_users();
+		return $usernames;
 	}
 }
 

@@ -21,6 +21,12 @@ $(document).ready(function(){
 		var names = $.parseJSON(data);
 		console.log(names);
 	});
+	
+	$.get("server/portfolio_view.php", {portfolioname:true}, function(data){
+
+		var portfolios = $.parseJSON(data);	
+		console.log(portfolios);
+	});
 });
 
 </script>

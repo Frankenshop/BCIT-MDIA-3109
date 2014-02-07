@@ -9,8 +9,7 @@ if (isset($_GET['user'])){
 }
 
 
-if (isset($_GET['username'])){
+if (isset($_GET['username'])) {
 	echo json_encode($user->get_usernames());	
 }
-
 ?>

@@ -17,13 +17,14 @@ class User_db {
 	function get_all_users(){
 		global $con;
 	
-	$query = "SELECT * FROM user";
-	$result = mysqli_query($con, $query);
-	$username = array();
-	while ($row = mysqli_fetch_array($result)){
-		$username[$row['id']] = $row['username'] . ", " . $row['desc'];
-	}
-
+		$query = "SELECT * FROM user";
+		$result = mysqli_query($con, $query);
+		$username = array();
+		
+		while ($row = mysqli_fetch_array($result)) {
+			$username[$row['id']] = $row['username'];
+		}
+		
 		return $username;
 		
 	}

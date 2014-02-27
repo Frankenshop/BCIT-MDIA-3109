@@ -5,8 +5,6 @@ include("connect.php");
 class Portfolio_db {
 	private $portfolio;
 	
-	
-	
 	function get_all_portfolios(){
 		global $con;
 	
@@ -19,7 +17,6 @@ class Portfolio_db {
 		}
 		
 		return $portfolioname;
-		
 	}
 }
 

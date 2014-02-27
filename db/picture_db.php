@@ -2,75 +2,129 @@
 include("connect.php");
 
 class Picture_db {
-	
-	private $c_con;
-	private $pic_id;
-	private $user_id;
-	
-	function __construct(){
+	// get all known picutres
+	function get_all_pictures(){
 		global $con;
 	
-		$this->c_con = $con;
-	}
-	
-	function get_all_pictures(){
 		$query = "SELECT * FROM picture";
-		$result = mysqli_query($this->c_con, $query);	
+		$result = mysqli_query($con, $query);
+		$pictures = array();
 		
-		$arr = array();
-		while ($row = mysqli_fetch_array($result)){
-			$arr[$row["id"]] = $row;
+		while ($row = mysqli_fetch_array($result)) {
+			$picture = array();
+			$picture['link'] = $row['link'];
+			$picture['title'] = $row['title'];
+			$picture['description'] = $row['description'];
+			$pictures[$row['id']] = $picture;
 		}
 		
-		return $arr;
+		return $pictures;
 	}
 	
-	function get_picture_by_id(){
-		$query = "SELECT * FROM picture WHERE id =".$this->pic_id;
-		$result = mysqli_query($this->c_con, $query);	
+	// get a single picture
+	function get_picture($picture_id){
+		global $con;
+	
+		$query = "SELECT * FROM picture WHERE id = $picture_id";
+		$result = mysqli_query($con, $query);
 		
-		$arr = array();
-		while ($row = mysqli_fetch_array($result)){
-			$arr[$row["id"]] = $row;
+		if (mysqli_num_rows($result) > 0) {
+			$row = mysqli_fetch_array($result);
+			$pictures = array();
+			$picture = array();
+			$picture['link'] = $row['link'];
+			$picture['title'] = $row['title'];
+			$picture['description'] = $row['description'];
+			$pictures[$row['id']] = $picture;
+			return $pictures;
 		}
+		return FALSE;
+	}
+	
+	// add a picture
+	function add_picture($link, $title, $description) {
+		global $con;
 		
-		return $arr;
+		$query = "INSERT INTO picture VALUES(0,'$link','$title','$description')";
+		$result = mysqli_query($con, $query);
+		if ($result === TRUE)	
+			return mysqli_insert_id($con);
+		return FALSE;
 	}
 	
-	function get_pictures_by_user_id(){
-		$query = "SELECT picture.id, picture.link, picture.title, picture.desc FROM picture
-				LEFT JOIN user_picture ON user_picture.picture_id = picture.id
-				LEFT JOIN user ON user.id = user_picture.user_id
-				WHERE user.id = ".$this->user_id;	
+	// remove a user
+	function remove_picture($picture_id) {
+		global $con;
+		
+		$query = "DELETE FROM picture WHERE id = $picture_id";
+		$result = mysqli_query($con, $query);	
+		return $result;
 	}
 	
-	function set_pic_id($id){
-		if(is_numeric($id)){
-		$this->pic_id = $id;
-		} else {
-			$this->error = "USER ID IS NOT VALID";
+	// change the title
+	function change_title($picture_id,$title) {
+		global $con;
+		
+		$query = "UPDATE picture SET title = '$title' WHERE id = $picture_id";
+		$result = mysqli_query($con, $query);	
+		return $result;
+	}
+	
+	// change the link
+	function change_link($picture_id,$link) {
+		global $con;
+		
+		$query = "UPDATE picture SET link = '$link' WHERE id = $picture_id";
+		$result = mysqli_query($con, $query);	
+		return $result;
+	}
+	
+	// change the description
+	function change_description($picture_id,$description) {
+		global $con;
+		
+		$query = "UPDATE picture SET description = '$description' WHERE id = $picture_id";
+		$result = mysqli_query($con, $query);	
+		return $result;
+	}
+	
+	// get the splash image for a portfolio
+	function get_splash_picture($portfolio_id) {
+		global $con;
+	
+		$query = "SELECT * FROM portfolio_splash WHERE portfolio_id = $portfolio_id";
+		$result = mysqli_query($con, $query);
+		
+		if (mysqli_num_rows($result) > 0) {
+			$row = mysqli_fetch_array($result);
+			return get_picture($row['picture_id']);
 		}
+		return FALSE;
 	}
 	
-	function set_user_id($id){
-		if(is_numeric($id)){
-		$this->user_id = $id;
-		} else {
-			$this->error = "USER ID IS NOT VALID";
+	// get all known picutres for a portfolio
+	function get_portfolio_pictures($portfolio_id){
+		global $con;
+	
+		$query = "SELECT * FROM portfolio_picture WHERE portfolio_id = $portfolio_id";
+		$result = mysqli_query($con, $query);
+		$pictures = array();
+		
+		while ($row = mysqli_fetch_array($result)) {
+			$query = "SELECT * FROM picture WHERE id = $portfolio_id";
+			$picture_result = mysqli_query($con, $query);
+			if (mysqli_num_rows($picture_result) > 0) {
+				$picture_row = mysqli_fetch_array($picture_result);
+				$picture = array();
+				$picture['link'] = $picture_row['link'];
+				$picture['title'] = $picture_row['title'];
+				$picture['description'] = $picture_row['description'];
+				$pictures[$picture_row['id']] = $picture;
+			}
 		}
+		return $pictures;
 	}
 	
-	function show_error(){
-		echo $this->error;
-	}
 }
-/*
-$users = new User_db();
-$allusers = $users->get_all_users();
-
-echo "<pre>";
-var_dump($allusers);
-echo "</pre>";
-*/
 
 ?>

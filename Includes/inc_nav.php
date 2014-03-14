@@ -6,9 +6,7 @@
    	<ul>
     
    	 	<li> <a class="" href = "index.php">Home</a> </li>
-        <li> <a href = "">About</a> </li>
-        <li> <a href = "">Contact</a> </li>
-        
+        <li id="log-button"> </li>
     </ul>
     
    </div><!--Closes nav-->

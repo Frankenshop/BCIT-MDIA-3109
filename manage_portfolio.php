@@ -17,50 +17,31 @@
 
 <script>
 $(document).ready(function(){
+	var display_portfolio = function() {
+		$.get("server/user_view.php", {get_user_id:true}, function(data){
+			var id = $.parseJSON(data);
+			if (id == -1)
+				console.log("No user is currently logged in.");
+			else {
+				$.get("server/portfolio_view.php", {get_user_portfolios:true, user_id: id}, function(data){
+					var portfolios = $.parseJSON(data);
+					console.log(portfolios);
+					if (portfolios.length > 0)
+						console.log(portfolios);
+					else
+						console.log("No portfolios.");
+				});
+			}
+		});
+	};
+	
 	$.get("server/session.php", {is_loggedin: true}, function(data) {
 		var success = $.parseJSON(data);
 		if (success === true) {
-			$.get("server/user_view.php", {get_user:true}, function(data){
-				var username = $.parseJSON(data);
-				if (username == false)
-					console.log("No user is currently logged in.");
-				else {
-					console.log(username);
-				}
-			});
-			
-			$.get("server/user_view.php", {get_user_id:true}, function(data){
-				var id = $.parseJSON(data);
-				if (id == -1)
-					console.log("No user is currently logged in.");
-				else {
-					console.log(id);
-				}
-			});
-		
-			$.get("server/user_view.php", {get_all_users:true}, function(data){
-				var names = $.parseJSON(data);
-				console.log(names);
-			});
-			
-			$.get("server/user_view.php", {confirm_password:true, password: 12345}, function(data){
-				var result = $.parseJSON(data);
-				if (result === true)
-					console.log("The password is '12345'");
-				else
-					console.log("The password is not '12345'");
-			});
-			
-			$.get("server/user_view.php", {confirm_password:true, password: 54321}, function(data){
-				var result = $.parseJSON(data);
-				if (result === true)
-					console.log("The password is '54321'");
-				else
-					console.log("The password is not '54321'");
-			});
+			display_portfolio();
 		}
 		else {
-			$("#signup-widget").signup();
+			$("#login-widget").login({cancel_page:"index.php"}).on( "login", function( event) { display_portfolio(); });
 		}
 	});
 });

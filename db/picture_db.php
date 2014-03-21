@@ -52,7 +52,53 @@ class Picture_db {
 		return FALSE;
 	}
 	
-	// remove a user
+	// add a picture to the splash pictures
+	function add_splash_picture($portfolio_id, $picture_id) {
+		global $con;
+		
+		$query = "INSERT INTO portfolio_splash VALUES($portfolio_id, $picture_id)";
+		$result = mysqli_query($con, $query);
+		if ($result === TRUE)	
+			return TRUE;
+		return FALSE;
+	}
+	
+	// remove a picture from the splash pictures
+	function remove_splash_picture($portfolio_id) {
+		global $con;
+		
+		$query = "DELETE FROM portfolio_splash WHERE portfolio_id = $portfolio_id";
+		$result = mysqli_query($con, $query);
+		return $result;
+	}
+	
+	// add a picture to the portfolio pictures
+	function add_portfolio_picture($portfolio_id, $picture_id) {
+		global $con;
+		
+		$query = "INSERT INTO portfolio_picture VALUES($portfolio_id, $picture_id)";
+		$result = mysqli_query($con, $query);
+		if ($result === TRUE)	
+			return TRUE;
+		else {
+			$query = "UPDATE portfolio_picture SET picture_id = $picture_id WHERE portfolio_id = $portfolio_id";
+			$result = mysqli_query($con, $query);
+			if ($result === TRUE)	
+				return TRUE;
+		}
+		return FALSE;
+	}
+	
+	// remove a picture from the splash pictures
+	function remove_portfolio_picture($portfolio_id, $picture_id) {
+		global $con;
+		
+		$query = "DELETE FROM portfolio_picture WHERE portfolio_id = $portfolio_id AND picture_id = $picture_id";
+		$result = mysqli_query($con, $query);
+		return $result;
+	}
+	
+	// remove a picture
 	function remove_picture($picture_id) {
 		global $con;
 		
@@ -97,7 +143,7 @@ class Picture_db {
 		
 		if (mysqli_num_rows($result) > 0) {
 			$row = mysqli_fetch_array($result);
-			return get_picture($row['picture_id']);
+			return $this->get_picture($row['picture_id']);
 		}
 		return FALSE;
 	}

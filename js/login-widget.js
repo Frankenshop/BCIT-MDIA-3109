@@ -13,14 +13,14 @@ $(function() {
 			first_child.remove();
 		
 		if (login === false) {
-			var logout_button = $( "<a href = '#'>Logout</a>").appendTo( log_button );
+			var logout_button = $( "<a>Logout</a>").appendTo( log_button );
 			var logout_form = $( "<form action='index.php'></form>").appendTo( log_button );
 			logout_button.on( "click", function () {
 			  do_logout(logout_form);
 			});
 		}
 		else {
-			var login_button = $( "<a href = '#'>Login</a>").appendTo( log_button );
+			var login_button = $( "<a>Login</a>").appendTo( log_button );
 			login_button.on( "click", function () {
 			  do_login();
 			});
@@ -28,7 +28,7 @@ $(function() {
 	};
 	
 	var do_login = function () {
-		$( "#login-widget" ).login({login_page: "index.php"});
+		$( "#login-widget" ).login({login_page: document.URL});
 	};
 	
 	var do_logout = function (logout_form) {
@@ -38,6 +38,29 @@ $(function() {
 				logout_form.submit();
 		});
 	};
+	
+	var get_query_strings = function (url) {
+		
+		// if there aren't query strings, return an empty array
+		var string_start = url.indexOf("?");
+		if (string_start == -1)
+			return new Array();
+			
+		// get the query string
+		var query_string = url.substr(string_start+1,url.length - string_start);
+		
+		// split on '&' characters
+		var split_strings = query_string.split("&");
+		
+		var output = new Object();
+		$.each(split_strings, function (key, value) {
+			var key_value_pair = value.split("=");
+			if (key_value_pair.length == 2) {
+				output[key_value_pair[0]] = key_value_pair[1];
+			}
+		});
+		return output;
+	}
 	
 	// the login widget
 	$.widget( "sean.login", {
@@ -77,12 +100,22 @@ $(function() {
 			// see if we are appending the buttons to a form
 			if (this.options.cancel_page === "") 
 				this.cancel_element = this.element;
-			else
+			else {
 				this.cancel_element = $( "<form action='" + this.options.cancel_page + "' method='get'>" ).appendTo( this.element );
+				var self = this;
+				$.each(get_query_strings(this.options.cancel_page), function (key, value) {
+					var hidden_element = $( "<input type='hidden' name='" + key + "' value='" + value + "'></input>").appendTo( self.cancel_element ); 
+				});	
+			}
 			if (this.options.login_page === "")
 				this.login_element = this.element;
-			else
+			else {
 				this.login_element = $( "<form action='" + this.options.login_page + "' method='get'>" ).appendTo( this.element );
+				var self = this;
+				$.each(get_query_strings(this.options.login_page), function (key, value) {
+					var hidden_element = $( "<input type='hidden' name='" + key + "' value='" + value + "'>").appendTo( self.login_element ); 
+				});		
+			}
 				
 			// add the buttons
 			this.cancel_button = $( "<button type='submit' class='login-button-cancel' id='login-widget-cancel-button'>Cancel</button>").appendTo( this.cancel_element ).button();

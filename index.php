@@ -20,44 +20,7 @@ $(document).ready(function(){
 	$.get("server/session.php", {is_loggedin: true}, function(data) {
 		var success = $.parseJSON(data);
 		if (success === true) {
-			$.get("server/user_view.php", {get_user:true}, function(data){
-				var username = $.parseJSON(data);
-				if (username == false)
-					console.log("No user is currently logged in.");
-				else {
-					console.log(username);
-				}
-			});
-			
-			$.get("server/user_view.php", {get_user_id:true}, function(data){
-				var id = $.parseJSON(data);
-				if (id == -1)
-					console.log("No user is currently logged in.");
-				else {
-					console.log(id);
-				}
-			});
-		
-			$.get("server/user_view.php", {get_all_users:true}, function(data){
-				var names = $.parseJSON(data);
-				console.log(names);
-			});
-			
-			$.get("server/user_view.php", {confirm_password:true, password: 12345}, function(data){
-				var result = $.parseJSON(data);
-				if (result === true)
-					console.log("The password is '12345'");
-				else
-					console.log("The password is not '12345'");
-			});
-			
-			$.get("server/user_view.php", {confirm_password:true, password: 54321}, function(data){
-				var result = $.parseJSON(data);
-				if (result === true)
-					console.log("The password is '54321'");
-				else
-					console.log("The password is not '54321'");
-			});
+			var redirect = $("<form action='manage_portfolio.php' method='post'>").submit();
 		}
 		else {
 			$("#signup-widget").signup();
@@ -85,10 +48,7 @@ include('Includes/inc_nav.php');
     
     
     <div id="third">
-    
-    <br />
-    
-    <p> Boop </p>
+    	
     
     </div> <!-- Closes third -->
     

@@ -46,6 +46,22 @@ class Portfolio_db {
 		return FALSE;
 	}
 	
+	function add_portfolio_for_user($name,$summary,$user_id) {
+		global $con;
+		
+		$query = "INSERT INTO portfolio VALUES(0,'$name','$summary')";
+		$result = mysqli_query($con, $query);
+		if ($result === TRUE) {
+			$id = mysqli_insert_id($con);
+			$query = "INSERT INTO user_portfolio VALUES('$user_id','$id')";
+			$result = mysqli_query($con, $query);
+			if ($result === TRUE) {
+				return $id;	
+			}
+		}
+		return FALSE;
+	}
+	
 	function remove_portfolio($portfolio_id) {
 		global $con;
 		
@@ -89,10 +105,30 @@ class Portfolio_db {
 				$portfolio['PortfolioName'] = $portfolio_row['PortfolioName'];
 				$portfolio['Summary'] = $portfolio_row['Summary'];
 				$portfolios[$portfolio_row['id']] = $portfolio;
-				//return $portfolio;
 			}
-			//return $row['portfolio_id'];
-			//$portfolios[$row['user_id']] = $row['portfolio_id'];
+		}
+		return $portfolios;
+	}
+	
+	function get_user_collaborating_portfolios($user_id) {
+		global $con;
+	
+		$query = "SELECT * FROM portfolio_collaborator WHERE user_id = $user_id";
+		$result = mysqli_query($con, $query);
+		$portfolios = array();
+		
+		while ($row = mysqli_fetch_array($result)) {
+			
+			$query = "SELECT * FROM portfolio WHERE id = " . $row['portfolio_id'];
+			$portfolio_result = mysqli_query($con, $query);
+			
+			if (mysqli_num_rows($portfolio_result) > 0) {
+				$portfolio_row = mysqli_fetch_array($portfolio_result);
+				$portfolio = array();
+				$portfolio['PortfolioName'] = $portfolio_row['PortfolioName'];
+				$portfolio['Summary'] = $portfolio_row['Summary'];
+				$portfolios[$portfolio_row['id']] = $portfolio;
+			}
 		}
 		return $portfolios;
 	}

@@ -347,6 +347,91 @@ a {
 	padding: 0px;
 }
 
+.portfolio {
+	text-align: left;	
+	display:table;
+	width: 100%;
+	height: auto;
+	padding-top:2px;
+	padding-bottom:2px;
+}
+.portfolio.even {
+	background: rgba(255,255,255,0.3);	
+}
+.portfolio.odd {
+	
+	background: rgba(0,0,0,0.05);	
+}
+
+.portfolio .content img {
+	float:left;
+	margin-right: 15px;
+	vertical-align: middle;
+}
+.portfolio .content #portfolio-splash-full {
+	float: none;
+	display:block;
+	margin:auto;
+	width:800px;
+	height:200px;	
+}
+.portfolio .content {
+	display:table-cell;
+	padding-left:5%;
+}
+
+.portfolio .content.full {
+	display:table-cell;
+	width:80%;
+	padding-left:5%;
+	padding-right:5%;
+}
+
+.portfolio .edit {
+	
+	padding-right:5%;
+	display:table-cell;
+	text-align:right;
+	vertical-align: middle;
+	width:20%;
+}
+
+#portfolio-title {
+	display:inline;
+	margin-top: 5px;
+	margin-right: 1%;
+	margin-left: 3.5%;
+	font-size: 14pt;
+}
+input#portfolio-title {
+	width: 25%;
+}
+/* --- Upload file --- */
+#upload-file-widget {
+	display: none;	
+}
+#upload-file-widget.upload-file-widget {
+	position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -42px;
+    margin-left: -172px;
+	display: block;
+	text-align: right;
+	background:rgba(255,255,255,1.0);
+	width: 345px;
+	height: 85px;
+	padding:20px;
+	border: 2px solid black;
+	-webkit-border-radius: 9px;
+	-moz-border-radius: 9px;
+	border-radius: 9px;
+}
+
+#upload-file-widget.upload-file-widget h2 {
+	text-align: left;
+}
+
 /* --- Login widget styles --- */
 #login-widget {
 	display: none;	
@@ -415,6 +500,52 @@ a {
 #signup-widget h3 {
 	text-align: center;	
 }
+.add-portfolio-container {
+	display: table;	
+	width: 90%;
+	padding-left: 5%;
+	padding-right: 5%;
+}
+
+.add-portfolio-container .add-portfolio-left {
+	display: table-cell;
+	width: auto;
+	
+}
+.add-portfolio-container .add-portfolio-right {
+	display: table-cell;	
+	text-align: right;
+	width: auto;
+	vertical-align: middle;
+}
+
+.add-portfolio-container .add-portfolio-left .add-portfolio-portfolioname-div, .add-portfolio-container .add-portfolio-left .add-portfolio-summary-div {
+	display: inline-block;
+	vertical-align: middle;
+}
+.add-portfolio-container .add-portfolio-left .add-portfolio-summary-div {
+	width: 70%;
+}
+
+.add-portfolio-container .add-portfolio-left .add-portfolio-summary-div label {
+
+}
+
+.add-portfolio-widget label, .add-portfolio-widget input, .add-portfolio-widget button {
+	display:inline-block;
+}
+
+.add-portfolio-widget .add-portfolio-input-summary {
+	height: 1.65em;
+	width: 75%;
+	padding: 9px 15px;
+	border: 0;
+	font-size: 14px;
+	overflow: auto;
+	margin-bottom: 2px;
+	vertical-align: middle;
+}
+
 /* Search Bar Styles */
 @font-face {
 	font-family: 'icomoon';

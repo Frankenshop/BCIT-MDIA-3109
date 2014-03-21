@@ -31,6 +31,10 @@ class Portfolio {
 		return $this->db->add_portfolio($name,$summary);
 	}
 	
+	function create_portfolio_for_user($name,$summary,$user_id) {
+		return $this->db->add_portfolio_for_user($name,$summary,$user_id);
+	}
+	
 	function delete_portfolio($portfolio_id) {
 		if ($portfolio_id == $this->portfolio)
 			$this->portfolio = -1;
@@ -68,6 +72,22 @@ class Portfolio {
 	
 	function get_user_portfolios($user_id) {
 		return $this->db->get_user_portfolios($user_id);
+	}
+	
+	function get_user_is_portfolio_owner($user_id, $portfolio_id) {
+		$portfolios = $this->db->get_user_portfolios($user_id);
+		if (count($portfolios) <= 0)
+			return FALSE;
+		$portfolio_keys = array_keys($portfolios);
+		foreach ($portfolio_keys as $key) {
+			if ($key == $portfolio_id)
+				return TRUE;
+		}
+		return FALSE;
+	}
+	
+	function get_user_collaborating_portfolios($user_id) {
+		return $this->db->get_user_collaborating_portfolios($user_id);
 	}
 }
 

@@ -428,6 +428,11 @@ input#portfolio-title {
 	border-radius: 9px;
 }
 
+#upload-file-widget.upload-file-widget.large {
+	margin-top: -42px;
+	height: 225px;
+}
+
 #upload-file-widget.upload-file-widget h2 {
 	text-align: left;
 }
@@ -802,4 +807,10 @@ a:hover {
 
 a:visited {
 	color: #333;
+}
+
+.thumb {
+	width: 100px;
+	height: 100px;
+	float: none !important;	
 }

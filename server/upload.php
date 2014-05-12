@@ -2,12 +2,11 @@
 
 include("picture.php");
 if (isset($_FILES['splash_picture']) && isset($_POST['portfolio_id'])) {
-	
 	upload_splash_picture($_FILES['splash_picture'], $_POST['portfolio_id']);
 }
 
 if (isset($_FILES['portfolio_picture']) && isset($_POST['portfolio_id']) && isset($_POST['picture_title']) && isset($_POST['picture_description'])) {
-	upload_portfolio_picture($_FILES['splash_picture'], $_POST['portfolio_id'],$_POST['picture_title'],$_POST['picture_description']);
+	upload_portfolio_picture($_FILES['portfolio_picture'], $_POST['portfolio_id'],$_POST['picture_title'],$_POST['picture_description']);
 }
 
 if (isset($_POST['redirect_url'])) {

@@ -61,10 +61,16 @@ $(document).ready(function(){
 		if (portfolioImages == null || portfolioImages.length <= 0) {
 			var no_images = $("<span>There are no images attached to this portfolio</span>");
 			image_div.append(no_images);
-			if (is_owner) {
-				var upload_image_button = $("<button>Upload New Image...</button>");
-				image_div.append(upload_image_button);
+		}
+		else {
+			for (var i = 0; i < portfolioImages.length; i++) {
+				image_div.append("<img src='"+portfolioImages[i]+"' class='thumb'/>");
 			}
+		}
+		
+		if (is_owner) {
+			var upload_image_button = $("<button>Upload New Image...</button>").on("click", function () { $("#upload-file-widget").uploadfile({title:"Upload Picture:", additional_fields:"<h2>Title:</h2><input type='text' name='picture_title' style='width:310px'/><h2>Description:</h2><input type='text' name='picture_description' style='width:310px'/><input type='hidden' name='portfolio_id' value='"+requested_portfolio+"'/><input type='hidden' name='redirect_url' value='view_portfolio.php?portfolio="+requested_portfolio+"'/>", input_name: "portfolio_picture", additional_class: "large"});});
+			image_div.append(upload_image_button);
 		}
 		
 		// append the contributors
@@ -107,25 +113,39 @@ $(document).ready(function(){
 						  info['SplashPicture'] = value['link'];
 						});
 					}
-					// determine if the current user is the owner
-					$.get("server/session.php", {is_loggedin: true}, function(data) {
-						var success = $.parseJSON(data);
-						if (success === true) 
-							$.get("server/user_view.php", {get_user_id: true}, function(data) {
-								var user_id = $.parseJSON(data);
-								if (user_id !== false) 
-									$.get("server/portfolio_view.php", {get_user_owns_portfolio: true, user_id: user_id, portfolio_id: requested_portfolio }, function(data) {
-										var success = $.parseJSON(data);
-										if (success !== false)
-											is_owner = true;	
-										finalize_load(info);
-									});
-								else 
-									finalize_load(info);
+					// find the portfolio pictures
+					$.get("server/picture_view.php", {get_pictures_for_portfolio: true, portfolio_id: requested_portfolio}, function(data) {
+						var picture = $.parseJSON(data);
+						if (picture !== false) {
+							info['PortfolioPicture'] = new Array();
+							$.each(picture, function( index, value ) {
+							  info['PortfolioPicture'].push(value['link']);
 							});
-						else 
-							finalize_load(info);
+						}
+						else {
+							info['PortfolioPicture'] = null;
+						}
+						// determine if the current user is the owner
+						$.get("server/session.php", {is_loggedin: true}, function(data) {
+							var success = $.parseJSON(data);
+							if (success === true) 
+								$.get("server/user_view.php", {get_user_id: true}, function(data) {
+									var user_id = $.parseJSON(data);
+									if (user_id !== false) 
+										$.get("server/portfolio_view.php", {get_user_owns_portfolio: true, user_id: user_id, portfolio_id: requested_portfolio }, function(data) {
+											var success = $.parseJSON(data);
+											if (success !== false)
+												is_owner = true;	
+											finalize_load(info);
+										});
+									else 
+										finalize_load(info);
+								});
+							else 
+								finalize_load(info);
+						});
 					});
+					
 				});
 			}
 		});
@@ -133,8 +153,7 @@ $(document).ready(function(){
 	
 	// finalize the load
 	var finalize_load = function(info) {
-		
-		display_single_portfolio(info['PortfolioName'], info['Summary'], "", $("#portfolio"), info['SplashPicture']);
+		display_single_portfolio(info['PortfolioName'], info['Summary'], "", $("#portfolio"), info['SplashPicture'],info['PortfolioPicture']);
 	}
 	
 	// swap the description for an input box

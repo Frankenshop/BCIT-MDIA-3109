@@ -45,6 +45,7 @@ class Picture_db {
 	function add_picture($link, $title, $description) {
 		global $con;
 		
+		
 		$query = "INSERT INTO picture VALUES(0,'$link','$title','$description')";
 		$result = mysqli_query($con, $query);
 		if ($result === TRUE)	
@@ -157,15 +158,16 @@ class Picture_db {
 		$pictures = array();
 		
 		while ($row = mysqli_fetch_array($result)) {
-			$query = "SELECT * FROM picture WHERE id = $portfolio_id";
+			$query = "SELECT * FROM picture WHERE id = ".$row['picture_id'];
 			$picture_result = mysqli_query($con, $query);
+			
 			if (mysqli_num_rows($picture_result) > 0) {
 				$picture_row = mysqli_fetch_array($picture_result);
 				$picture = array();
 				$picture['link'] = $picture_row['link'];
 				$picture['title'] = $picture_row['title'];
 				$picture['description'] = $picture_row['description'];
-				$pictures[$picture_row['id']] = $picture;
+				$pictures[$row['picture_id']] = $picture;
 			}
 		}
 		return $pictures;

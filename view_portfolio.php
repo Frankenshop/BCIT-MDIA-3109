@@ -8,6 +8,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link href="CSS/styles.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link href="CSS/lightbox.css" rel="stylesheet" type="text/css" media="screen"/>
     <title>Folio2Folio</title>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
@@ -16,6 +17,8 @@
     <script src="js/add-portfolio-widget.js"></script>
     <script src="js/upload-file-widget.js"></script>
     <script src="js/functions.js"></script>
+    <script src="js/lightbox.js"></script>
+    
 </head>
 
 <script>
@@ -64,7 +67,7 @@ $(document).ready(function(){
 		}
 		else {
 			for (var i = 0; i < portfolioImages.length; i++) {
-				image_div.append("<img src='"+portfolioImages[i]+"' class='thumb'/>");
+				image_div.append("<a href='"+portfolioImages[i]['link']+"' data-lightbox='gallery' data-title='"+portfolioImages[i]['title']+": "+portfolioImages[i]['description']+"'><img src='"+portfolioImages[i]['link']+"' class='thumb'/></a>");
 			}
 		}
 		
@@ -75,20 +78,33 @@ $(document).ready(function(){
 		
 		// append the contributors
 		if (is_owner) {
-			var contributor_div = $("<div class='contributor'></div>");
+			var contributor_div = $("<div></div>");
 			var contributor_break = $("<br/>");
-			var contributors_title = $("<h2>All Contributors:</h2>");
-			var contributor_span = $("<span>There are no contributors</span>");
+			var contributors_title = $("<h2 id='contributors-title'>All Contributors:</h2>");
 			var contributor_title = $("<h2>Add Contributor:</h2>");
 			var contributor_input = $("<input type='text' id='contributor-input'></input>");
-			var contributor_button = $("<button>Submit</button>");
+			var contributor_button = $("<button>Submit</button>").on("click", function() { add_contributor($("#contributor-input").val()); });
 			contributor_div.append(contributor_break);
 			contributor_div.append(contributors_title);
-			contributor_div.append(contributor_span);
 			contributor_div.append(contributor_title);
 			contributor_div.append(contributor_input);
 			contributor_div.append(contributor_button);
 			content.append(contributor_div);
+			
+			$.get("server/portfolio_view.php", {get_collaborating_users: true, portfolio_id: requested_portfolio}, function(data) {
+				var users = $.parseJSON(data); 
+				if (users.length == 0) {
+					contributors_title.after("<span class='contributor' id='no-contrib'>There are no contributors</span>");
+				}
+				else {
+					$.each(users, function(index, value) {
+						var span = $("<span class='contributor' id='contrib_"+value['username']+"' style='display:block'>"+value['username']+"</span>");
+						span.append("<button>Remove</button)").on("click", function() { remove_contributor(value['username']);});
+					 	contributors_title.after(span);
+						
+					});
+				}
+			});
 		}
 		
 		// attach the new portfolio
@@ -119,7 +135,7 @@ $(document).ready(function(){
 						if (picture !== false) {
 							info['PortfolioPicture'] = new Array();
 							$.each(picture, function( index, value ) {
-							  info['PortfolioPicture'].push(value['link']);
+							  info['PortfolioPicture'].push(value);
 							});
 						}
 						else {
@@ -155,6 +171,53 @@ $(document).ready(function(){
 	var finalize_load = function(info) {
 		display_single_portfolio(info['PortfolioName'], info['Summary'], "", $("#portfolio"), info['SplashPicture'],info['PortfolioPicture']);
 	}
+	
+	// add a contributor
+	var add_contributor = function(name) {
+		$.get("server/user_view.php", {get_user_id: true, user_name: name}, function(data) {
+			var user_id = $.parseJSON(data);
+			if (user_id !== false) 
+				$.post("server/portfolio_post.php", {add_collaborator: true, portfolio_id: requested_portfolio, user_id: user_id  }, function(data) {
+					var success = $.parseJSON(data);
+					if (success === false)
+						console.log("Already collab");
+					else {
+						if ($("#no-contrib").length == 1)
+							$("#no-contrib").remove();
+						var contributors_title = $("#contributors-title");
+						var span = $("<span class='contributor' id='contrib_"+name+"' style='display:block'>"+name+"</span>");
+						span.append("<button>Remove</button)").on("click", function() { remove_contributor(name);});
+					 	contributors_title.after(span);
+					}
+				});
+			else 
+				console.log("Unknown User");
+		});
+	}
+	
+	// remove a contributor
+	var remove_contributor = function(name) {
+		$.get("server/user_view.php", {get_user_id: true, user_name: name}, function(data) {
+			var user_id = $.parseJSON(data);
+			if (user_id !== false) 
+				$.post("server/portfolio_post.php", {remove_collaborator: true, portfolio_id: requested_portfolio, user_id: user_id  }, function(data) {
+					var success = $.parseJSON(data);
+					if (success === false)
+						console.log("Already collab");
+					else {
+						$("#contrib_"+name).remove();
+						var items = $(".contributor");
+						if(items.length == 0) {
+							$("#contributors-title").after("<span class='contributor' id='no-contrib'>There are no contributors</span>");
+						}
+						
+					}
+				});
+			else 
+				console.log("Unknown User");
+		});
+	}
+
 	
 	// swap the description for an input box
 	var swap_description = function(to_input) {

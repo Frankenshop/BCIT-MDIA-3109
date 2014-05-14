@@ -24,14 +24,20 @@ $(document).ready(function(){
 		
 		// the content
 		var content = $("<div class='content'></div>");
+		var anch = $("<a href='view_portfolio.php?portfolio="+id+"'></a>");
 		var name_element = $("<h2 class='portfolio-title'>" + name + "</h2>");
 		var summary_element = $("<span class='portfolio-description'>" + summary + "</span>");
 		if (splashImage === null) {
 			var image = $("<img src='Images/defaultsplashthumb.png'/>");
-			content.append(image);
+			anch.append(image);
 		}
-		content.append(name_element);
-		content.append(summary_element);
+		else {
+			var image = $("<img src='"+splashImage+"' style='width:200px;height:47px;'/>");
+			anch.append(image);	
+		}
+		anch.append(name_element);
+		anch.append(summary_element);
+		content.append(anch);
 		div.append(content);
 		
 		// the edit
@@ -65,8 +71,18 @@ $(document).ready(function(){
 			var keys = Object.keys(portfolios);
 			if (keys.length > 0) {
 				$.each( keys, function( index, value ){
-					var styleString = index % 2 == 1 ? "owner odd" : "owner even";
-					display_single_portfolio(keys[index], portfolios[value]['PortfolioName'], portfolios[value]['Summary'], styleString, $("#portfolio"), null);
+					// find a splash picture
+					$.get("server/picture_view.php", {get_splash_picture_portfolio: true, portfolio_id: keys[index]}, function(data) {
+						var picture = $.parseJSON(data);
+						var pictureLink = null;
+						if (picture !== false) {
+							$.each(picture, function( index, value ) {
+							  pictureLink = value['link'];
+							});
+						}
+						var styleString = index % 2 == 1 ? "owner odd" : "owner even";
+						display_single_portfolio(keys[index], portfolios[value]['PortfolioName'], portfolios[value]['Summary'], styleString, $("#portfolio"), pictureLink);
+					});
 				});
 			}
 			else {
@@ -85,8 +101,19 @@ $(document).ready(function(){
 			var keys = Object.keys(portfolios);
 			if (keys.length > 0) {
 				$.each( keys, function( index, value ){
-					var styleString = index % 2 == 1 ? "collaborator odd" : "collaborator even";
-					display_single_portfolio(keys[index], portfolios[value]['PortfolioName'], portfolios[value]['Summary'], styleString, $("#collaborators-portfolio"), null);
+					// find a splash picture
+					$.get("server/picture_view.php", {get_splash_picture_portfolio: true, portfolio_id: keys[index]}, function(data) {
+						var picture = $.parseJSON(data);
+						var pictureLink = null;
+						if (picture !== false) {
+							$.each(picture, function( index, value ) {
+							  pictureLink = value['link'];
+							});
+						}
+						var styleString = index % 2 == 1 ? "collaborator odd" : "collaborator even";
+						display_single_portfolio(keys[index], portfolios[value]['PortfolioName'], portfolios[value]['Summary'], styleString, $("#collaborators-portfolio"), pictureLink);
+					});
+					
 				});
 			}
 			else {

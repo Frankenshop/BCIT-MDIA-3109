@@ -62,10 +62,29 @@ class Portfolio_db {
 		return FALSE;
 	}
 	
+	function add_collaborating_portfolio_for_user($portfolio_id,$user_id) {
+		global $con;
+		
+		$query = "INSERT INTO portfolio_collaborator VALUES('$portfolio_id','$user_id')";
+		$result = mysqli_query($con, $query);
+		if ($result === TRUE) {
+			return mysqli_insert_id($con);	
+		}
+		return FALSE;
+	}
+	
 	function remove_portfolio($portfolio_id) {
 		global $con;
 		
 		$query = "DELETE FROM portfolio WHERE id = $portfolio_id";
+		$result = mysqli_query($con, $query);	
+		return $result;	
+	}
+	
+	function remove_collaborating_portfolio($portfolio_id, $user_id) {
+		global $con;
+		
+		$query = "DELETE FROM portfolio_collaborator WHERE portfolio_id = $portfolio_id AND user_id = $user_id";
 		$result = mysqli_query($con, $query);	
 		return $result;	
 	}
@@ -131,6 +150,27 @@ class Portfolio_db {
 			}
 		}
 		return $portfolios;
+	}
+	
+	function get_collaborating_users($portfolio_id) {
+		global $con;
+	
+		$query = "SELECT * FROM portfolio_collaborator WHERE portfolio_id = $portfolio_id";
+		$result = mysqli_query($con, $query);
+		$users = array();
+		
+		while ($row = mysqli_fetch_array($result)) {
+			
+			$query = "SELECT * FROM user WHERE id = " . $row['user_id'];
+			$user_result = mysqli_query($con, $query);
+			while ($user_row = mysqli_fetch_array($user_result)) {
+				$user = array();
+				$user['username'] = $user_row['username'];
+				$user['status'] = $user_row['status'];
+				$users[$user_row['id']] = $user;
+			}
+		}
+		return $users;
 	}
 }
 

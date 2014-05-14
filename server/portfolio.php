@@ -50,6 +50,22 @@ class Portfolio {
 		return FALSE;
 	}
 	
+	function add_collaborating_portfolio_for_user($portfolio_id,$user_id) {
+		return $this->db->add_collaborating_portfolio_for_user($portfolio_id, $user_id);
+	}
+	
+	function add_collaborator_for_current_portfolio($user_id) {
+		return $this->db->add_collaborating_portfolio_for_user($this->portfolio, $user_id);
+	}
+	
+	function remove_collaborating_portfolio_for_user($portfolio_id, $user_id) {
+		return $this->db->remove_collaborating_portfolio($portfolio_id, $user_id);
+	}
+	
+	function remove_collaborating_portfolio_for_current_portfolio($user_id) {
+		return $this->db->remove_collaborating_portfolio($this->portfolio, $user_id);
+	}
+	
 	function change_name($portfolio_id,$name) {
 		return $this->db->change_name($portfolio_id,$name);
 	}
@@ -84,6 +100,10 @@ class Portfolio {
 				return TRUE;
 		}
 		return FALSE;
+	}
+	
+	function get_collaborating_users($portfolio_id) {
+		return $this->db->get_collaborating_users($portfolio_id);
 	}
 	
 	function get_user_collaborating_portfolios($user_id) {

@@ -13,6 +13,7 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
     <script src="js/login-widget.js"></script>
     <script src="js/signup-widget.js"></script>
+    
 </head>
 
 <script>

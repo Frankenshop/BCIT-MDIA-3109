@@ -18,5 +18,13 @@ if (isset($_POST['change_description']) && isset($_POST['portfolio_id']) && isse
 if (isset($_POST['change_title']) && isset($_POST['portfolio_id']) && isset($_POST['title'])){
 	echo json_encode($portfolio->change_name($_POST['portfolio_id'],$_POST['title']));		
 }
+
+if (isset($_POST['add_collaborator']) && isset($_POST['portfolio_id']) && isset($_POST['user_id'])) {
+	echo json_encode($portfolio->add_collaborating_portfolio_for_user($_POST['portfolio_id'],$_POST['user_id']));
+}
+
+if (isset($_POST['remove_collaborator']) && isset($_POST['portfolio_id']) && isset($_POST['user_id'])) {
+	echo json_encode($portfolio->remove_collaborating_portfolio_for_user($_POST['portfolio_id'],$_POST['user_id']));
+}
 ?>
 
